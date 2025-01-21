@@ -115,6 +115,8 @@
       <el-table-column label="作物" align="center" prop="crop" />
       <el-table-column label="状态" align="center" prop="status" />
       <el-table-column label="联系方式" align="center" prop="contactInfo" />
+      <el-table-column label="留言数" align="center" prop="messagesNumber" />
+      <el-table-column label="点赞数" align="center" prop="likesNumber" />
       <el-table-column
         label="创建时间"
         align="center"
@@ -122,7 +124,7 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="操作" align="center">
+      <el-table-column label="操作" align="center" width="240px">
         <template #default="scope">
           <el-button
             link
@@ -140,6 +142,11 @@
           >
             删除
           </el-button>
+          <el-button link type="success" @click="addLike(scope.row.id)">点赞</el-button>
+          <el-button link type="warning" @click="addMessages('create', scope.row.id)">
+            留言
+          </el-button>
+          <el-button link type="default" @click="showMessages(scope.row.id)">查看留言</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -154,13 +161,42 @@
 
   <!-- 表单弹窗：添加/修改 -->
   <ExpertInfoForm ref="formRef" @success="getList" />
+
+  <!-- 表单弹窗：添加/修改 -->
+  <CommentRecordForm ref="CommentRecordFormRef" @success="getList() && getListMessages()" />
+
+  <!-- start事项查看弹窗 -->
+  <el-drawer v-model="drawer2" :direction="direction" :data="MessageFormData">
+    <template #header>
+      <h3>留言查看</h3>
+    </template>
+    <template #default>
+      <div class="relative space-y-3 py-4 box-border">
+        <el-card class="w-full" v-for="(item, index) in MessageFormData" :key="index">
+          <p>留言内容: {{ item.comment }}</p>
+          <p>留言时间：{{ formatTime(item.commentTime, 'yyyy-MM-dd HH:mm:ss') }}</p>
+          <!-- <el-button @click="replyMassage(item)" type="primary">
+            回复
+          </el-button> -->
+          <el-button type="primary" @click="replyMassage('create', item.commentId, item.toId)">
+            回复
+          </el-button>
+        </el-card>
+      </div>
+    </template>
+  </el-drawer>
 </template>
 
 <script setup lang="ts">
 import { dateFormatter } from '@/utils/formatTime';
 import download from '@/utils/download';
 import { ExpertInfoApi, ExpertInfoVO } from '@/api/agriculture/expertinfo';
+import { LikeRecordApi, LikeRecordVO } from '@/api/repository/likerecord';
+
 import ExpertInfoForm from './ExpertInfoForm.vue';
+import CommentRecordForm from '@/views/repository/commentrecord/CommentRecordForm.vue';
+import { CommentRecordApi, CommentRecordVO } from '@/api/repository/commentrecord';
+import { formatTime } from '@/utils/index';
 
 /** 专家信息 列表 */
 defineOptions({ name: 'ExpertInfo' });
@@ -180,6 +216,8 @@ const queryParams = reactive({
   crop: undefined,
   status: undefined,
   contactInfo: undefined,
+  messagesNumber: undefined,
+  likesNumber: undefined,
   createTime: []
 });
 const queryFormRef = ref(); // 搜索的表单
@@ -213,6 +251,47 @@ const resetQuery = () => {
 const formRef = ref();
 const openForm = (type: string, id?: number) => {
   formRef.value.open(type, id);
+};
+const formData = ref();
+
+/** 查看评论操作 */
+//start事件查看方法
+const drawer2 = ref(false);
+const MessageFormData = ref<CommentRecordVO[]>([]);
+const expertId = ref();
+const showMessages = async (id: number) => {
+  expertId.value = id;
+  let resData = await CommentRecordApi.getCommentRecordPage({ toId: id });
+  MessageFormData.value = resData.list;
+  drawer2.value = true;
+};
+/** 添加评论操作 */
+const CommentRecordFormRef = ref();
+const addMessages = (type: string, toId?: number) => {
+  CommentRecordFormRef.value.open(type, toId);
+};
+/** 点赞按钮操作 */
+const addLike = async (id: number) => {
+  try {
+    let resid = await LikeRecordApi.createLikeRecord({ likeId: id });
+    if (resid.data == 0 || resid.data == '0' || resid == 0 || resid == '0') {
+      message.error(t('取消点赞成功'));
+    }
+    message.success(t(' 点赞成功'));
+    // 刷新列表
+    await getList();
+  } catch {}
+};
+/** 回复评论 */
+const replyMassage = (type: string, id?: number, toId?: number) => {
+  CommentRecordFormRef.value.open(type, id, toId);
+};
+/**
+ * 获取最新的评论数据
+ */
+const getListMessages = async () => {
+  let resData = await CommentRecordApi.getCommentRecordPage({ toId: expertId.value });
+  MessageFormData.value = resData.list;
 };
 
 /** 删除按钮操作 */

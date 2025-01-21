@@ -66,7 +66,7 @@
           <Icon icon="ep:refresh" class="mr-5px" />
           重置
         </el-button>
-        <el-button
+        <!-- <el-button
           type="primary"
           plain
           @click="openForm('create')"
@@ -74,7 +74,7 @@
         >
           <Icon icon="ep:plus" class="mr-5px" />
           新增
-        </el-button>
+        </el-button> -->
         <el-button
           type="success"
           plain
@@ -112,22 +112,29 @@
       /> -->
       <el-table-column label="操作" align="center">
         <template #default="scope">
-          <el-button
+          <!-- <el-button
             link
             type="primary"
             @click="openForm('update', scope.row.commentId)"
             v-hasPermi="['repository:comment-record:update']"
           >
             编辑
-          </el-button>
+          </el-button> -->
           <el-button
+            link
+            type="primary"
+            @click="openForm('create', scope.row.commentId, scope.row.toId)"
+          >
+            回复
+          </el-button>
+          <!-- <el-button
             link
             type="danger"
             @click="handleDelete(scope.row.commentId)"
             v-hasPermi="['repository:comment-record:delete']"
           >
             删除
-          </el-button>
+          </el-button> -->
         </template>
       </el-table-column>
     </el-table>
@@ -197,8 +204,8 @@ const resetQuery = () => {
 
 /** 添加/修改操作 */
 const formRef = ref();
-const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id);
+const openForm = (type: string, id?: number, toId?: number) => {
+  formRef.value.open(type, id, toId);
 };
 
 /** 删除按钮操作 */

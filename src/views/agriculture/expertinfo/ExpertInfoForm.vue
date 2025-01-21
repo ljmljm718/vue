@@ -52,6 +52,8 @@ const formData = ref({
   specializedDiseases: undefined,
   crop: undefined,
   status: undefined,
+  messagesNumber: undefined,
+  likesNumber: undefined,
   contactInfo: undefined
 });
 const formRules = reactive({

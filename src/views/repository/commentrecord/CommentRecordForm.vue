@@ -7,23 +7,23 @@
       label-width="100px"
       v-loading="formLoading"
     >
-      <el-form-item label="评价对象序号" prop="toId">
+      <!-- <el-form-item label="评价对象序号" prop="toId">
         <el-input v-model="formData.toId" placeholder="请输入评价对象序号" />
       </el-form-item>
       <el-form-item label="回复评论序号" prop="recoverId">
         <el-input v-model="formData.recoverId" placeholder="请输入回复评论序号" />
+      </el-form-item> -->
+      <el-form-item label="留言内容" prop="comment">
+        <el-input v-model="formData.comment" placeholder="请输入留言内容" />
       </el-form-item>
-      <el-form-item label="评论内容" prop="comment">
-        <el-input v-model="formData.comment" placeholder="请输入评论内容" />
-      </el-form-item>
-      <el-form-item label="评论时间" prop="commentTime">
+      <!-- <el-form-item label="评论时间" prop="commentTime">
         <el-date-picker
           v-model="formData.commentTime"
           type="datetime"
           value-format="x"
           placeholder="选择评论时间"
         />
-      </el-form-item>
+      </el-form-item> -->
     </el-form>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
@@ -55,13 +55,19 @@ const formRules = reactive({});
 const formRef = ref(); // 表单 Ref
 
 /** 打开弹窗 */
-const open = async (type: string, id?: number) => {
+const open = async (type: string, id?: number, toId?: number) => {
   dialogVisible.value = true;
   dialogTitle.value = t('action.' + type);
   formType.value = type;
   resetForm();
-  // 修改时，设置数据
+  if (toId) {
+    formData.value.toId = toId;
+  }
   if (id) {
+    formData.value.recoverId = id;
+  }
+  // 修改时，设置数据
+  if (id && type === 'update') {
     formLoading.value = true;
     try {
       formData.value = await CommentRecordApi.getCommentRecord(id);

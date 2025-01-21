@@ -9,6 +9,8 @@ export interface ExpertInfoVO {
   crop: string; // 作物
   status: string; // 状态
   contactInfo: string; // 联系方式
+  messagesNumber: string; // 留言数
+  likesNumber: string; // 点赞数
 }
 
 // 专家信息 API
