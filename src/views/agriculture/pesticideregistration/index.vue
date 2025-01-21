@@ -76,9 +76,12 @@ const resetQuery = () => {
 };
 
 /** 添加/修改操作 */
-const formRef = ref();
+const router = useRouter(); // 路由
+// const formRef = ref();
 const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id);
+  // formRef.value.open(type, id);
+  if (id) router.push(`/asset/pesticide-registration-form?id=${id}`);
+  else router.push(`/asset/pesticide-registration-form`);
 };
 
 /** 删除按钮操作 */
@@ -354,7 +357,7 @@ const handleClickShowSearch = () => {
   </el-scrollbar>
   <!-- todo页面组件复制在下面 -->
   <!-- 表单弹窗：添加/修改 -->
-  <PesticideRegistrationForm ref="formRef" @success="getList" />
+  <!-- <PesticideRegistrationForm ref="formRef" @success="getList" /> -->
 </template>
 <style lang="scss" scoped>
 // 原页面样式复制在下面
