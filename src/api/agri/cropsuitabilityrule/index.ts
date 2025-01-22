@@ -8,8 +8,8 @@ export interface CropSuitabilityRuleVO {
   suitableActivity: string; // 适宜活动
   phenologicalStartDate: Date; // 物候开始时间
   phenologicalEndDate: Date; // 物候结束时间
-  temperatureUpper: string; // 温度上限
-  temperatureLower: string; // 温度下限
+  temperatureUpper: number; // 温度上限
+  temperatureLower: number; // 温度下限
   suitabilityLevel: string; // 适宜度
   suitabilityDescription: string; // 适宜度说明
   referenceSuggestions: string; // 参考对策建议
