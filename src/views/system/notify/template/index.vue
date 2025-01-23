@@ -26,10 +26,10 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="状态" prop="status">
+      <el-form-item label="允许通知" prop="status">
         <el-select
           v-model="queryParams.status"
-          placeholder="请选择开启状态"
+          placeholder="请选择是否开启通知"
           clearable
           class="!w-240px"
         >
@@ -104,7 +104,7 @@
         width="200"
         :show-overflow-tooltip="true"
       />
-      <el-table-column label="开启状态" align="center" prop="status" width="80">
+      <el-table-column label="允许通知" align="center" prop="status" width="80">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.COMMON_STATUS" :value="scope.row.status" />
         </template>
