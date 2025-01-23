@@ -4,7 +4,7 @@
       ref="formRef"
       :model="formData"
       :rules="formRules"
-      label-width="100px"
+      label-width="120px"
       v-loading="formLoading"
     >
       <el-form-item label="作物" prop="crop">
@@ -69,6 +69,20 @@
           type="textarea"
         />
       </el-form-item>
+      <el-form-item label="农事活动适宜度说明" prop="agriculturalActivitySuitabilityDescription">
+        <el-input
+          v-model="formData.agriculturalActivitySuitabilityDescription"
+          placeholder="请输入农事活动适宜度说明"
+          type="textarea"
+        />
+      </el-form-item>
+      <el-form-item label="未来七天湿度建议" prop="humidityRecommendationsForNext7Days">
+        <el-input
+          v-model="formData.humidityRecommendationsForNext7Days"
+          placeholder="请输入未来七天湿度建议"
+          type="textarea"
+        />
+      </el-form-item>
     </el-form>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
@@ -101,7 +115,9 @@ const formData = ref({
   temperatureLower: undefined,
   suitabilityLevel: undefined,
   suitabilityDescription: undefined,
-  referenceSuggestions: undefined
+  referenceSuggestions: undefined,
+  agriculturalActivitySuitabilityDescription: undefined,
+  humidityRecommendationsForNext7Days: undefined
 });
 const formRules = reactive({
   crop: [{ required: true, message: '作物不能为空', trigger: 'blur' }],
@@ -170,7 +186,9 @@ const resetForm = () => {
     temperatureLower: undefined,
     suitabilityLevel: undefined,
     suitabilityDescription: undefined,
-    referenceSuggestions: undefined
+    referenceSuggestions: undefined,
+    agriculturalActivitySuitabilityDescription: undefined,
+    humidityRecommendationsForNext7Days: undefined
   };
   formRef.value?.resetFields();
 };
