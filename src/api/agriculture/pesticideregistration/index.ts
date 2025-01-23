@@ -24,6 +24,8 @@ export interface PesticideRegistrationVO {
   remarks: string; //备注
   approvalDate: Date; //核准日期
   reapprovalDate: Date; //重新核准日期
+  pesticideRegistrationSubDOList: []; // 用药量信息
+  pesticideMatterSubDOList: []; // 农药注意事项
 }
 
 // 农药登记 API
@@ -59,5 +61,13 @@ export const PesticideRegistrationApi = {
       url: `/agriculture/pesticide-registration/export-excel`,
       params
     });
+  },
+  // 用药量信息
+  createBatchPesticideRegistrationSubDO: async (data: any) => {
+    return await request.post({ url: `/agriculture/pesticide-registration-sub/create `, data });
+  },
+  // 获得用药量信息分页
+  getPesticideRegistrationSubDO: async (params: any) => {
+    return await request.get({ url: `/agriculture/pesticide-registration-sub/page`, params });
   }
 };
