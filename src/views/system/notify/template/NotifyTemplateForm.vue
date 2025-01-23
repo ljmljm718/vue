@@ -29,7 +29,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="开启状态" prop="status">
+      <el-form-item label="允许通知" prop="status">
         <el-radio-group v-model="formData.status">
           <el-radio
             v-for="dict in getIntDictOptions(DICT_TYPE.COMMON_STATUS)"
@@ -51,15 +51,15 @@
   </Dialog>
 </template>
 <script lang="ts" setup>
-import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
-import * as NotifyTemplateApi from '@/api/system/notify/template'
-import { CommonStatusEnum } from '@/utils/constants'
-const message = useMessage() // 消息弹窗
+import { DICT_TYPE, getIntDictOptions } from '@/utils/dict';
+import * as NotifyTemplateApi from '@/api/system/notify/template';
+import { CommonStatusEnum } from '@/utils/constants';
+const message = useMessage(); // 消息弹窗
 
-const dialogVisible = ref(false) // 弹窗的是否展示
-const dialogTitle = ref('') // 弹窗的标题
-const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
-const formType = ref('') // 表单的类型
+const dialogVisible = ref(false); // 弹窗的是否展示
+const dialogTitle = ref(''); // 弹窗的标题
+const formLoading = ref(false); // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
+const formType = ref(''); // 表单的类型
 const formData = ref<NotifyTemplateApi.NotifyTemplateVO>({
   id: undefined,
   name: '',
@@ -70,59 +70,59 @@ const formData = ref<NotifyTemplateApi.NotifyTemplateVO>({
   params: '',
   status: CommonStatusEnum.ENABLE,
   remark: ''
-})
+});
 const formRules = reactive({
   type: [{ required: true, message: '消息类型不能为空', trigger: 'change' }],
-  status: [{ required: true, message: '开启状态不能为空', trigger: 'blur' }],
+  status: [{ required: true, message: '请选择是否允许通知', trigger: 'blur' }],
   code: [{ required: true, message: '模板编码不能为空', trigger: 'blur' }],
   name: [{ required: true, message: '模板名称不能为空', trigger: 'blur' }],
   nickname: [{ required: true, message: '发件人姓名不能为空', trigger: 'blur' }],
   content: [{ required: true, message: '模板内容不能为空', trigger: 'blur' }]
-})
-const formRef = ref() // 表单 Ref
+});
+const formRef = ref(); // 表单 Ref
 
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
-  dialogVisible.value = true
-  dialogTitle.value = type
-  formType.value = type
-  resetForm()
+  dialogVisible.value = true;
+  dialogTitle.value = type;
+  formType.value = type;
+  resetForm();
   // 修改时，设置数据
   if (id) {
-    formLoading.value = true
+    formLoading.value = true;
     try {
-      formData.value = await NotifyTemplateApi.getNotifyTemplate(id)
+      formData.value = await NotifyTemplateApi.getNotifyTemplate(id);
     } finally {
-      formLoading.value = false
+      formLoading.value = false;
     }
   }
-}
-defineExpose({ open }) // 提供 open 方法，用于打开弹窗
+};
+defineExpose({ open }); // 提供 open 方法，用于打开弹窗
 
 /** 提交表单 */
-const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
+const emit = defineEmits(['success']); // 定义 success 事件，用于操作成功后的回调
 const submitForm = async () => {
   // 校验表单
-  if (!formRef) return
-  const valid = await formRef.value.validate()
-  if (!valid) return
-  formLoading.value = true
+  if (!formRef) return;
+  const valid = await formRef.value.validate();
+  if (!valid) return;
+  formLoading.value = true;
   try {
-    const data = formData.value as unknown as NotifyTemplateApi.NotifyTemplateVO
+    const data = formData.value as unknown as NotifyTemplateApi.NotifyTemplateVO;
     if (formType.value === 'create') {
-      await NotifyTemplateApi.createNotifyTemplate(data)
-      message.success('新增成功')
+      await NotifyTemplateApi.createNotifyTemplate(data);
+      message.success('新增成功');
     } else {
-      await NotifyTemplateApi.updateNotifyTemplate(data)
-      message.success('修改成功')
+      await NotifyTemplateApi.updateNotifyTemplate(data);
+      message.success('修改成功');
     }
-    dialogVisible.value = false
+    dialogVisible.value = false;
     // 发送操作成功的事件
-    emit('success')
+    emit('success');
   } finally {
-    formLoading.value = false
+    formLoading.value = false;
   }
-}
+};
 /** 重置表单 */
 const resetForm = () => {
   formData.value = {
@@ -135,7 +135,7 @@ const resetForm = () => {
     params: '',
     status: CommonStatusEnum.ENABLE,
     remark: ''
-  }
-  formRef.value?.resetFields()
-}
+  };
+  formRef.value?.resetFields();
+};
 </script>
