@@ -158,6 +158,16 @@
       </el-table-column>
       <el-table-column label="适宜度说明" align="center" prop="suitabilityDescription" />
       <el-table-column label="参考对策建议" align="center" prop="referenceSuggestions" />
+      <el-table-column
+        label="农事活动适宜度说明"
+        align="center"
+        prop="agriculturalActivitySuitabilityDescription"
+      />
+      <el-table-column
+        label="未来七天湿度建议"
+        align="center"
+        prop="humidityRecommendationsForNext7Days"
+      />
       <!-- <el-table-column
         label="创建时间"
         align="center"

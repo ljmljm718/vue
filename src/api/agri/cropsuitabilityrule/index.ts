@@ -13,6 +13,8 @@ export interface CropSuitabilityRuleVO {
   suitabilityLevel: string; // 适宜度
   suitabilityDescription: string; // 适宜度说明
   referenceSuggestions: string; // 参考对策建议
+  agriculturalActivitySuitabilityDescription: string; // 农事活动适宜度说明
+  humidityRecommendationsForNext7Days: string; // 未来七天湿度建议
 }
 
 // 作物适宜规则 API
