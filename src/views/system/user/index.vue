@@ -126,6 +126,11 @@
             :show-overflow-tooltip="true"
           />
           <el-table-column label="手机号码" align="center" prop="mobile" width="120" />
+          <el-table-column label="会员状态" align="center" prop="membershipType" width="120">
+            <template #default="scope">
+              <dict-tag :type="DICT_TYPE.AGRI_MENBER" :value="scope.row.membershipType" />
+            </template>
+          </el-table-column>
           <el-table-column label="状态" key="status">
             <template #default="scope">
               <el-switch

@@ -349,5 +349,6 @@ export enum DICT_TYPE {
   AGRI_DISEASE_EFFECT = 'agri_disease_effect',
   // ========== agri -  作物适宜度 ==========
   AGRI_SUITABILITY_DEGREE = 'agri_suitability_degree',
-  AGRI_SUITABILITY_ACTIVITY = 'agri_suitability_activity'
+  AGRI_SUITABILITY_ACTIVITY = 'agri_suitability_activity',
+  AGRI_MENBER = 'agri_member'
 }
