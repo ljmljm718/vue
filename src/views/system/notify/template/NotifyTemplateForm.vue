@@ -40,6 +40,17 @@
           </el-radio>
         </el-radio-group>
       </el-form-item>
+      <el-form-item label="允许播报" prop="broadcastStatus">
+        <el-radio-group v-model="formData.broadcastStatus">
+          <el-radio
+            v-for="dict in getIntDictOptions(DICT_TYPE.COMMON_STATUS)"
+            :key="dict.value"
+            :label="dict.value"
+          >
+            {{ dict.label }}
+          </el-radio>
+        </el-radio-group>
+      </el-form-item>
       <el-form-item label="备注" prop="remark">
         <el-input v-model="formData.remark" placeholder="请输入备注" />
       </el-form-item>
@@ -69,11 +80,16 @@ const formData = ref<NotifyTemplateApi.NotifyTemplateVO>({
   type: undefined,
   params: '',
   status: CommonStatusEnum.ENABLE,
-  remark: ''
+  remark: '',
+  broadcastStatus: CommonStatusEnum.DISABLE,
+  noticeTiming: '',
+  noticeTime: '',
+  repeatType: ''
 });
 const formRules = reactive({
   type: [{ required: true, message: '消息类型不能为空', trigger: 'change' }],
   status: [{ required: true, message: '请选择是否允许通知', trigger: 'blur' }],
+  broadcastStatus: [{ required: true, message: '请选择是否允许播报', trigger: 'blur' }],
   code: [{ required: true, message: '模板编码不能为空', trigger: 'blur' }],
   name: [{ required: true, message: '模板名称不能为空', trigger: 'blur' }],
   nickname: [{ required: true, message: '发件人姓名不能为空', trigger: 'blur' }],
@@ -134,7 +150,11 @@ const resetForm = () => {
     type: undefined,
     params: '',
     status: CommonStatusEnum.ENABLE,
-    remark: ''
+    remark: '',
+    broadcastStatus: CommonStatusEnum.DISABLE,
+    noticeTiming: '',
+    noticeTime: '',
+    repeatType: ''
   };
   formRef.value?.resetFields();
 };
