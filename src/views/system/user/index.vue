@@ -148,9 +148,13 @@
             :formatter="dateFormatter"
             width="180"
           />
-          <el-table-column label="操作" align="center" width="160">
+          <el-table-column label="操作" align="center" width="190">
             <template #default="scope">
               <div class="flex items-center justify-center">
+                <el-button type="primary" link @click="updateType(scope.row.id)">
+                  <Icon icon="ep:edit" />
+                  变为会员
+                </el-button>
                 <el-button
                   type="primary"
                   link
@@ -231,6 +235,8 @@ import UserImportForm from './UserImportForm.vue';
 import UserAssignRoleForm from './UserAssignRoleForm.vue';
 import DeptTree from './DeptTree.vue';
 
+import { UserMemberApi } from '@/api/agri/usermember';
+
 defineOptions({ name: 'SystemUser' });
 
 const message = useMessage(); // 消息弹窗
@@ -250,6 +256,11 @@ const queryParams = reactive({
 });
 const queryFormRef = ref(); // 搜索的表单
 
+const updateType = async (id: number) => {
+  await UserMemberApi.updateUserMemberType({ relevanceUserId: id });
+  message.success('修改成功');
+  getList();
+};
 /** 查询列表 */
 const getList = async () => {
   loading.value = true;
