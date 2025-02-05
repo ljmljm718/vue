@@ -111,6 +111,17 @@
       <!-- <el-table-column label="主键ID" align="center" prop="id" /> -->
       <el-table-column label="专家姓名" align="center" prop="expert" />
       <el-table-column label="服务区域" align="center" prop="serviceArea" />
+      <el-table-column label="专家图片" align="center" prop="expertImg">
+        <template #default="{ row }">
+          <el-image
+            class="h-50px w-50px"
+            :src="row.expertImg"
+            :preview-src-list="[row.expertImg]"
+            preview-teleported
+            fit="cover"
+          />
+        </template>
+      </el-table-column>
       <el-table-column label="擅长病害" align="center" prop="specializedDiseases" />
       <el-table-column label="作物" align="center" prop="crop" />
       <el-table-column label="状态" align="center" prop="status" />
@@ -212,6 +223,7 @@ const queryParams = reactive({
   pageSize: 10,
   expert: undefined,
   serviceArea: undefined,
+  expertImg: undefined,
   specializedDiseases: undefined,
   crop: undefined,
   status: undefined,

@@ -13,6 +13,9 @@
       <el-form-item label="服务区域" prop="serviceArea">
         <el-input v-model="formData.serviceArea" placeholder="请输入服务区域" />
       </el-form-item>
+      <el-form-item label="专家图片" prop="expertImg">
+        <UploadImg v-model="formData.expertImg" />
+      </el-form-item>
       <el-form-item label="擅长病害" prop="specializedDiseases">
         <el-input v-model="formData.specializedDiseases" placeholder="请输入擅长病害" />
       </el-form-item>
@@ -49,6 +52,7 @@ const formData = ref({
   id: undefined,
   expert: undefined,
   serviceArea: undefined,
+  expertImg: undefined,
   specializedDiseases: undefined,
   crop: undefined,
   status: undefined,
@@ -114,6 +118,7 @@ const resetForm = () => {
     id: undefined,
     expert: undefined,
     serviceArea: undefined,
+    expertImg: undefined,
     specializedDiseases: undefined,
     crop: undefined,
     status: undefined,
