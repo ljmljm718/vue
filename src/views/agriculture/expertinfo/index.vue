@@ -125,6 +125,7 @@
       <el-table-column label="擅长病害" align="center" prop="specializedDiseases" />
       <el-table-column label="作物" align="center" prop="crop" />
       <el-table-column label="状态" align="center" prop="status" />
+      <el-table-column label="工作单位" align="center" prop="workUnit" />
       <el-table-column label="联系方式" align="center" prop="contactInfo" />
       <el-table-column label="留言数" align="center" prop="messagesNumber" />
       <el-table-column label="点赞数" align="center" prop="likesNumber" />
@@ -227,6 +228,8 @@ const queryParams = reactive({
   specializedDiseases: undefined,
   crop: undefined,
   status: undefined,
+  workUnit: undefined,
+  joinQuery: undefined,
   contactInfo: undefined,
   messagesNumber: undefined,
   likesNumber: undefined,

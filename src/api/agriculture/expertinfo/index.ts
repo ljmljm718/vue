@@ -8,6 +8,9 @@ export interface ExpertInfoVO {
   specializedDiseases: string; // 擅长病害
   crop: string; // 作物
   status: string; // 状态
+  expertImg: string; // 专家头像
+  workUnit: string; // 工作单位
+  joinQuery: string; // 联合查询
   contactInfo: string; // 联系方式
   messagesNumber: string; // 留言数
   likesNumber: string; // 点赞数

@@ -25,6 +25,9 @@
       <el-form-item label="状态" prop="status">
         <el-input v-model="formData.status" placeholder="请输入状态" />
       </el-form-item>
+      <el-form-item label="工作单位" prop="workUnit">
+        <el-input v-model="formData.workUnit" placeholder="请输入工作单位" />
+      </el-form-item>
       <el-form-item label="联系方式" prop="contactInfo">
         <el-input v-model="formData.contactInfo" placeholder="请输入联系方式" />
       </el-form-item>
@@ -58,6 +61,8 @@ const formData = ref({
   status: undefined,
   messagesNumber: undefined,
   likesNumber: undefined,
+  workUnit: undefined,
+  joinQuery: undefined,
   contactInfo: undefined
 });
 const formRules = reactive({
@@ -122,6 +127,8 @@ const resetForm = () => {
     specializedDiseases: undefined,
     crop: undefined,
     status: undefined,
+    workUnit: undefined,
+    joinQuery: undefined,
     contactInfo: undefined
   };
   formRef.value?.resetFields();
