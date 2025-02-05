@@ -55,7 +55,7 @@ const formRules = reactive({});
 const formRef = ref(); // 表单 Ref
 
 /** 打开弹窗 */
-const open = async (type: string, id?: number, toId?: number) => {
+const open = async (type: string, toId?: number, id?: number) => {
   dialogVisible.value = true;
   dialogTitle.value = t('action.' + type);
   formType.value = type;
@@ -66,6 +66,8 @@ const open = async (type: string, id?: number, toId?: number) => {
   if (id) {
     formData.value.recoverId = id;
   }
+  console.log(id);
+  console.log(toId);
   // 修改时，设置数据
   if (id && type === 'update') {
     formLoading.value = true;
