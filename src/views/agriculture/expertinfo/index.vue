@@ -284,7 +284,7 @@ const addLike = async (id: number) => {
 };
 /** 回复评论 */
 const replyMassage = (type: string, id?: number, toId?: number) => {
-  CommentRecordFormRef.value.open(type, id, toId);
+  CommentRecordFormRef.value.open(type, toId, id);
 };
 /**
  * 获取最新的评论数据
