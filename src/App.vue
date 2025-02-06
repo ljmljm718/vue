@@ -4,8 +4,14 @@ import { useAppStore } from '@/store/modules/app';
 import { useDesign } from '@/hooks/web/useDesign';
 import { CACHE_KEY, useCache } from '@/hooks/web/useCache';
 import routerSearch from '@/components/RouterSearch/index.vue';
+import { menuSearch } from '@/api/system/menu/index';
+import { requestMatchMenu } from '@/utils/menuMatch';
 
 defineOptions({ name: 'APP' });
+// requestMatchMenu("我想查看系统有哪些用户")
+menuSearch({ keyword: '我要看用户信息', type: 2 }).then((res) => {
+  console.log('menuSearch res =>', res);
+});
 
 const { getPrefixCls } = useDesign();
 const prefixCls = getPrefixCls('app');
