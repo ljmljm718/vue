@@ -62,11 +62,3 @@ interface MenuSearchVO {
 export const menuSearch = (params: MenuSearchVO) => {
   return request.get({ url: '/system/menu/search', params });
 };
-
-interface MenuSearchVO {
-  keyword: string;
-  type?: number;
-}
-export const menuSearch = (params: MenuSearchVO) => {
-  return request.get({ url: '/system/menu/search', params });
-};
