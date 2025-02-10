@@ -350,5 +350,7 @@ export enum DICT_TYPE {
   // ========== agri -  作物适宜度 ==========
   AGRI_SUITABILITY_DEGREE = 'agri_suitability_degree',
   AGRI_SUITABILITY_ACTIVITY = 'agri_suitability_activity',
-  AGRI_MENBER = 'agri_member'
+  AGRI_MENBER = 'agri_member',
+  // ========== agri -  种植方案 ==========
+  AGRI_PLANTING_SCHEME_TYPE = 'agri_planting_scheme_type'
 }
