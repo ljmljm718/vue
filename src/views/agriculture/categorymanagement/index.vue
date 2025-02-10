@@ -298,8 +298,8 @@ const handleClickShowSearch = () => {
           </template>
         </el-table-column>
         <el-table-column label="简介" align="center" prop="briefIntroduction" />
-        <!-- <el-table-column label="备注1" align="center" prop="remark1" />
-        <el-table-column label="备注2" align="center" prop="remark2" /> -->
+        <el-table-column label="分组" align="center" prop="remark1" />
+        <!-- <el-table-column label="备注2" align="center" prop="remark2" /> -->
         <el-table-column
           label="创建时间"
           align="center"

@@ -29,10 +29,10 @@
       <el-form-item label="简介" prop="briefIntroduction">
         <el-input v-model="formData.briefIntroduction" placeholder="请输入简介" />
       </el-form-item>
-      <!-- <el-form-item label="备注1" prop="remark1">
-        <el-input v-model="formData.remark1" placeholder="请输入备注1" />
+      <el-form-item label="分组" prop="remark1">
+        <el-input v-model="formData.remark1" placeholder="请输入分组" />
       </el-form-item>
-      <el-form-item label="备注2" prop="remark2">
+      <!--<el-form-item label="备注2" prop="remark2">
         <el-input v-model="formData.remark2" placeholder="请输入备注2" />
       </el-form-item> -->
     </el-form>
@@ -43,27 +43,27 @@
   </Dialog>
 </template>
 <script setup lang="ts">
-import { CategoryManagementApi, CategoryManagementVO } from '@/api/agriculture/categorymanagement'
+import { CategoryManagementApi, CategoryManagementVO } from '@/api/agriculture/categorymanagement';
 
 /** 品类管理 表单 */
-defineOptions({ name: 'CategoryManagementForm' })
+defineOptions({ name: 'CategoryManagementForm' });
 
 /** 将详情按钮 设为不可编辑 */
-const diableForm = ref<boolean>(false)
+const diableForm = ref<boolean>(false);
 const turnDisable = (val) => {
-  diableForm.value = val
-}
+  diableForm.value = val;
+};
 const handleClose = () => {
-  diableForm.value = false
-}
+  diableForm.value = false;
+};
 
-const { t } = useI18n() // 国际化
-const message = useMessage() // 消息弹窗
+const { t } = useI18n(); // 国际化
+const message = useMessage(); // 消息弹窗
 
-const dialogVisible = ref(false) // 弹窗的是否展示
-const dialogTitle = ref('') // 弹窗的标题
-const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
-const formType = ref('') // 表单的类型：create - 新增；update - 修改
+const dialogVisible = ref(false); // 弹窗的是否展示
+const dialogTitle = ref(''); // 弹窗的标题
+const formLoading = ref(false); // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
+const formType = ref(''); // 表单的类型：create - 新增；update - 修改
 const formData = ref({
   id: undefined,
   categoryName: undefined,
@@ -75,60 +75,59 @@ const formData = ref({
   briefIntroduction: undefined,
   remark1: undefined,
   remark2: undefined
-})
+});
 const formRules = reactive({
   categoryName: [{ required: true, message: '品类名称不能为空', trigger: 'blur' }],
   categoryCode: [{ required: true, message: '品类编码不能为空', trigger: 'blur' }]
-})
-const formRef = ref() // 表单 Ref
+});
+const formRef = ref(); // 表单 Ref
 
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
-  dialogVisible.value = true
-  if(type == 'select'){
-    dialogTitle.value = '详情'
-  }else{
-    dialogTitle.value = t('action.' + type)
+  dialogVisible.value = true;
+  if (type == 'select') {
+    dialogTitle.value = '详情';
+  } else {
+    dialogTitle.value = t('action.' + type);
   }
-  
-  
-  formType.value = type
-  resetForm()
+
+  formType.value = type;
+  resetForm();
   // 修改时，设置数据
   if (id) {
-    formLoading.value = true
+    formLoading.value = true;
     try {
-      formData.value = await CategoryManagementApi.getCategoryManagement(id)
+      formData.value = await CategoryManagementApi.getCategoryManagement(id);
     } finally {
-      formLoading.value = false
+      formLoading.value = false;
     }
   }
-}
-defineExpose({ open, turnDisable }) // 提供 open 方法，用于打开弹窗
+};
+defineExpose({ open, turnDisable }); // 提供 open 方法，用于打开弹窗
 
 /** 提交表单 */
-const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
+const emit = defineEmits(['success']); // 定义 success 事件，用于操作成功后的回调
 const submitForm = async () => {
   // 校验表单
-  await formRef.value.validate()
+  await formRef.value.validate();
   // 提交请求
-  formLoading.value = true
+  formLoading.value = true;
   try {
-    const data = formData.value as unknown as CategoryManagementVO
+    const data = formData.value as unknown as CategoryManagementVO;
     if (formType.value === 'create') {
-      await CategoryManagementApi.createCategoryManagement(data)
-      message.success(t('common.createSuccess'))
+      await CategoryManagementApi.createCategoryManagement(data);
+      message.success(t('common.createSuccess'));
     } else {
-      await CategoryManagementApi.updateCategoryManagement(data)
-      message.success(t('common.updateSuccess'))
+      await CategoryManagementApi.updateCategoryManagement(data);
+      message.success(t('common.updateSuccess'));
     }
-    dialogVisible.value = false
+    dialogVisible.value = false;
     // 发送操作成功的事件
-    emit('success')
+    emit('success');
   } finally {
-    formLoading.value = false
+    formLoading.value = false;
   }
-}
+};
 
 /** 重置表单 */
 const resetForm = () => {
@@ -143,7 +142,7 @@ const resetForm = () => {
     briefIntroduction: undefined,
     remark1: undefined,
     remark2: undefined
-  }
-  formRef.value?.resetFields()
-}
+  };
+  formRef.value?.resetFields();
+};
 </script>
