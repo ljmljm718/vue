@@ -372,7 +372,10 @@ const handleSendMsg = async (text) => {
       activeItem.text = '请求失败，请稍后重试';
       radioRecording.value = false;
     });
-    if (Array.isArray(docRef)) activeItem.docs = docRef;
+    if (Array.isArray(docRef)) {
+      activeItem.docs = docRef;
+      activeItem.libId = knowledgeLib.value;
+    }
     if (Array.isArray(urlRef)) activeItem.urls = urlRef;
     if (relatedQuery) activeItem.relatedQuery = extractStrings2(relatedQuery);
     console.log('🚀 ~ handleSendMsg ~ docRef 文档:', docRef);
@@ -455,9 +458,10 @@ const handleDeleteChatTheme = (id: string) => {
 };
 
 const getIconfromUrl = (url: string) => {
-  if (!url) return '/favicon1.ico';
+  if (!url) return 'favicon1.ico';
   const _fullUrl = new URL(url);
-  return _fullUrl.protocol + _fullUrl.host + '/favicon.ico';
+  console.log('🚀 ~ getIconfromUrl ~ _fullUrl:', _fullUrl);
+  return _fullUrl.origin + '/favicon.ico';
 };
 
 const handleOpenUrl = (url) => {
@@ -628,38 +632,94 @@ const handleOpenUrl = (url) => {
                               <el-icon><ArrowUpBold /></el-icon>
                             </div>
                           </div>
-                          <div
-                            v-show="item.showUrl"
-                            class="bg-#f6f7fb dark:bg-#151b2d mt-1 p-3 box-border rounded-md mb-4 shadow-sm space-y-2"
-                          >
-                            <div
-                              v-for="ele in item.urls"
-                              :key="ele.url"
-                              @click="handleOpenUrl(ele.url)"
-                              class="flex items-start justify-between w-full text-14px text"
-                            >
-                              <div
-                                class="line-clamp-2 text-#333333 dark:text-#eee"
-                                style="width: calc(100% - 160px)"
-                              >
-                                {{ ele.title }}
-                              </div>
-                              <div class="flex items-center space-x-2" :title="ele.siteName">
+                          <div v-show="item.showUrl" class="mt-1">
+                            <el-scrollbar>
+                              <div class="flex space-x-16px items-center">
                                 <div
-                                  class="w-140px line-clamp-1 text-#828499 dark:text-#ccc text-right"
+                                  v-for="ele in item.urls"
+                                  :key="ele.url"
+                                  @click="handleOpenUrl(ele.url)"
+                                  class="w-full text-14px bg-#f6f7fb dark:bg-#151b2d p-4 px-5 box-border rounded-md mb-4 shadow-sm"
                                 >
-                                  {{ ele.siteName }}
+                                  <div
+                                    class="line-clamp-2 text-#333333 dark:text-#eee"
+                                    style="width: 100%; height: 40px"
+                                  >
+                                    {{ ele.title }}
+                                  </div>
+                                  <div
+                                    class="flex items-center space-x-2 mt-2"
+                                    :title="ele.siteName"
+                                  >
+                                    <img :src="getIconfromUrl(ele.url)" class="w-14px h-14px" />
+                                    <div
+                                      class="w-140px line-clamp-1 text-#828499 dark:text-#ccc ml-1"
+                                    >
+                                      {{ ele.siteName }}
+                                    </div>
+                                  </div>
                                 </div>
-                                <img :src="getIconfromUrl(ele.url)" class="w-14px h-14px" />
                               </div>
+                            </el-scrollbar>
+                          </div>
+                        </div>
+                        <div
+                          v-if="Array.isArray(item.docs) && item.docs.length > 0"
+                          class="w-full mt-1 mb-2"
+                        >
+                          <div
+                            class="flex items-center space-x-2 text-#79759c cursor-pointer mb-2 text-14px"
+                            @click="item.showDoc = !item.showDoc"
+                          >
+                            <div>知识库来源 ({{ item.docs.length }})</div>
+                            <div class="relative top-3px">
+                              <el-icon><ArrowUpBold /></el-icon>
                             </div>
+                          </div>
+                          <div v-show="item.showDoc" class="mt-1">
+                            <el-scrollbar>
+                              <div class="flex space-x-16px items-center">
+                                <div
+                                  v-for="(ele, idx) in item.docs"
+                                  :key="idx"
+                                  class="w-full text-14px bg-#f6f7fb dark:bg-#151b2d p-4 px-5 box-border rounded-md mb-4 shadow-sm"
+                                >
+                                  <div
+                                    class="line-clamp-2 text-#333333 dark:text-#eee"
+                                    style="width: 100%; height: 40px"
+                                  >
+                                    {{ ele }}
+                                  </div>
+                                  <div
+                                    class="flex items-center space-x-2 mt-2"
+                                    :title="ele.siteName"
+                                  >
+                                    <img src="/libFrom.svg" class="w-14px h-14px" />
+                                    <div
+                                      class="w-140px line-clamp-1 text-#828499 dark:text-#ccc ml-1"
+                                    >
+                                      {{ item.libId }}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </el-scrollbar>
                           </div>
                         </div>
                       </div>
                       <div
-                        class="flex pt-3 px-3 space-x-3"
+                        class="flex pt-3 px-3 space-x-3 w-full !hidden"
                         v-if="Array.isArray(item.docs) && item.docs.length > 0"
                       >
+                        <div
+                          class="flex items-center space-x-2 text-#79759c cursor-pointer mb-2 text-14px"
+                          @click="item.showUrl = !item.showUrl"
+                        >
+                          <div>参考来源 ({{ item.urls.length }})</div>
+                          <div class="relative top-3px">
+                            <el-icon><ArrowUpBold /></el-icon>
+                          </div>
+                        </div>
                         <div
                           v-for="ele in item.docs"
                           :key="ele"

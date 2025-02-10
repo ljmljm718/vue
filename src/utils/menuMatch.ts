@@ -178,3 +178,65 @@ export const matchMenu = (input: string) => {
   ancestorRoutes = [];
   return resList;
 };
+
+function generateMarkdownTree(tree, indentLevel = 0) {
+  return tree.reduce((markdown, node) => {
+    // 给当前节点添加适当缩进
+    markdown += `${'  '.repeat(indentLevel)}- ${node.name}\n`;
+    // 节点存在子节点时，递归处理
+    if (node.children && node.children.length > 0) {
+      markdown += generateMarkdownTree(node.children, indentLevel + 1);
+    }
+    return markdown;
+  }, '');
+}
+
+export const generateMatchPrompt = (question) => {
+  const menuList = getMenuList();
+  return `
+# Role: 菜单回复机器人
+## Profile
+Version: 1.0
+## Workflow
+1.根据给定的菜单目录和输入的问题，给出符合要求的末级目录名称
+2.不要返回除了菜单目录名称以外的任何内容
+## Initialization
+以下是菜单目录结构:
+${generateMarkdownTree([{ name: '用户信息' }])}
+
+以下是用户提问:
+${question}
+  `;
+};
+
+export const requestMatchMenu = async (question) => {
+  const MODEL = 'Doubao-lite-32k';
+  const defaultThemeId = localStorage.getItem('MATCH_MENU_THEME_ID');
+  const themeId =
+    defaultThemeId ??
+    (await request.post({
+      url: '/agriculture/chat-theme/create',
+      data: {
+        collectionId: '',
+        model: MODEL,
+        theme: '',
+        type: 'text'
+      }
+    }));
+  if (typeof themeId === 'string') localStorage.setItem('MATCH_MENU_THEME_ID', themeId);
+  else return ElMessage.error('获取主题ID失败');
+
+  const res = await request.post({
+    url: `/agriculture/context/context-search`,
+    data: {
+      collectionId: '',
+      query: generateMatchPrompt(question),
+      stream: false,
+      model: MODEL,
+      maxNewTokens: 200,
+      themeId: themeId,
+      extraPrompt: ''
+    }
+  });
+  console.log('res ==>', res);
+};
