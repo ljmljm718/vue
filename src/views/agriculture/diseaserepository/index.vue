@@ -101,6 +101,7 @@ const getList = async () => {
       listCategoryManagement.value.forEach((itm) => {
         if (item.cropType == itm.id) item.cropType = itm.categoryName;
       });
+      if (item.imgId) item.imgIds = item.imgId.split(',')[0];
     });
     total.value = data.total;
   } finally {
@@ -319,8 +320,8 @@ const handleClickShowSearch = () => {
             <el-image
               class="h-50px w-50px"
               lazy
-              :src="row.imgId"
-              :preview-src-list="[row.imgId]"
+              :src="row.imgIds"
+              :preview-src-list="[row.imgIds]"
               preview-teleported
               fit="cover"
             />

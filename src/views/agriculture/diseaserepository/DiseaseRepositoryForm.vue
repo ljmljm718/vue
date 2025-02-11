@@ -20,7 +20,7 @@
         </el-col>
       </el-row>
       <el-row>
-        <el-col :span="12">
+        <el-col :span="24">
           <el-form-item label="知识库类别" prop="reservedOne">
             <el-select v-model="formData.reservedOne" placeholder="请选择知识库类别">
               <el-option
@@ -32,9 +32,11 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="12">
-          <el-form-item label="图片" prop="imgId">
-            <UploadImg v-model="formData.imgId" />
+      </el-row>
+      <el-row>
+        <el-col :span="24">
+          <el-form-item label="图片" prop="imgIds">
+            <UploadImgs v-model="formData.imgIds" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -160,9 +162,9 @@
       <!--      <el-form-item label="预留3" prop="reservedThree">-->
       <!--        <el-input v-model="formData.reservedThree" placeholder="请输入预留3"/>-->
       <!--      </el-form-item>-->
-      <!--      <el-form-item label="预留4" prop="reservedFour">-->
-      <!--        <el-input v-model="formData.reservedFour" placeholder="请输入预留4"/>-->
-      <!--      </el-form-item>-->
+      <el-form-item label="关联农药" prop="reservedFour">
+        <el-input v-model="formData.reservedFour" placeholder="请输入关联农药" />
+      </el-form-item>
     </el-form>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
@@ -242,6 +244,7 @@ const open = async (type: string, id?: number) => {
     try {
       formData.value = await DiseaseRepositoryApi.getDiseaseRepository(id);
       formData.value.reservedOne = Number(formData.value.reservedOne);
+      if (formData.value.imgId) formData.value.imgIds = formData.value.imgId.split(',');
     } finally {
       formLoading.value = false;
     }
@@ -260,6 +263,7 @@ const submitForm = async () => {
   // 提交请求
   formLoading.value = true;
   try {
+    if (formData.value.imgIds) formData.value.imgId = formData.value.imgIds.join(',');
     const data = formData.value as unknown as DiseaseRepositoryVO;
     if (formType.value === 'create') {
       await DiseaseRepositoryApi.createDiseaseRepository(data);
