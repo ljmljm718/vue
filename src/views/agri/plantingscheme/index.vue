@@ -91,6 +91,17 @@
           />
         </template>
       </el-table-column>
+      <el-table-column label="详情图片" align="center" prop="detailsImage">
+        <template #default="{ row }">
+          <el-image
+            class="h-50px w-50px"
+            :src="row.detailsImage"
+            :preview-src-list="[row.detailsImage]"
+            preview-teleported
+            fit="cover"
+          />
+        </template>
+      </el-table-column>
       <el-table-column label="类别" align="center" prop="category">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.AGRI_PLANTING_SCHEME_TYPE" :value="scope.row.category" />
@@ -159,6 +170,7 @@ const queryParams = reactive({
   pageSize: 10,
   cropName: undefined,
   cropImage: undefined,
+  detailsImage: undefined,
   category: undefined,
   createTime: []
 });
