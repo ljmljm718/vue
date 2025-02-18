@@ -127,6 +127,17 @@
       <!-- <el-table-column label="主键" align="center" prop="id" /> -->
       <el-table-column label="作物" align="center" prop="crop" />
       <el-table-column label="生长物候" align="center" prop="phenologicalStage" />
+      <el-table-column label="作物图片" align="center" prop="cropPicture">
+        <template #default="{ row }">
+          <el-image
+            class="h-50px w-50px"
+            :src="row.cropPicture"
+            :preview-src-list="[row.cropPicture]"
+            preview-teleported
+            fit="cover"
+          />
+        </template>
+      </el-table-column>
       <el-table-column label="适宜活动" align="center" prop="suitableActivity">
         <template #default="scope">
           <dict-tag
@@ -230,6 +241,7 @@ const queryParams = reactive({
   pageSize: 10,
   crop: undefined,
   phenologicalStage: undefined,
+  cropPicture: undefined,
   suitableActivity: undefined,
   phenologicalStartDate: [],
   phenologicalEndDate: [],

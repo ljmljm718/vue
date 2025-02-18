@@ -13,6 +13,9 @@
       <el-form-item label="生长物候" prop="phenologicalStage">
         <el-input v-model="formData.phenologicalStage" placeholder="请输入生长物候" />
       </el-form-item>
+      <el-form-item label="作物图片" prop="cropPicture">
+        <UploadImg v-model="formData.cropPicture" />
+      </el-form-item>
       <el-form-item label="适宜活动" prop="suitableActivity">
         <el-select v-model="formData.suitableActivity" placeholder="请选择适宜活动">
           <el-option
@@ -108,6 +111,7 @@ const formData = ref({
   id: undefined,
   crop: undefined,
   phenologicalStage: undefined,
+  cropPicture: undefined,
   suitableActivity: undefined,
   phenologicalStartDate: undefined,
   phenologicalEndDate: undefined,
@@ -179,6 +183,7 @@ const resetForm = () => {
     id: undefined,
     crop: undefined,
     phenologicalStage: undefined,
+    cropPicture: undefined,
     suitableActivity: undefined,
     phenologicalStartDate: undefined,
     phenologicalEndDate: undefined,
