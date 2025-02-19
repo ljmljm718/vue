@@ -8,29 +8,68 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="作物名称" prop="cropName">
+      <el-form-item label="名称" prop="name">
         <el-input
-          v-model="queryParams.cropName"
-          placeholder="请输入作物名称"
+          v-model="queryParams.name"
+          placeholder="请输入名称"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="位置" prop="position">
+        <el-input
+          v-model="queryParams.position"
+          placeholder="请输入位置"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="介绍信息" prop="introduction">
+        <el-input
+          v-model="queryParams.introduction"
+          placeholder="请输入介绍信息"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="作物" prop="crop">
+        <el-input
+          v-model="queryParams.crop"
+          placeholder="请输入作物"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
       </el-form-item>
       <el-form-item label="类别" prop="category">
-        <el-select
+        <el-input
           v-model="queryParams.category"
-          placeholder="请选择类别"
+          placeholder="请输入类别"
           clearable
+          @keyup.enter="handleQuery"
           class="!w-240px"
-        >
-          <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.AGRI_PLANTING_SCHEME_TYPE)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
+        />
+      </el-form-item>
+      <el-form-item label="工作单位" prop="workUnit">
+        <el-input
+          v-model="queryParams.workUnit"
+          placeholder="请输入工作单位"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="联系方式" prop="contactInfo">
+        <el-input
+          v-model="queryParams.contactInfo"
+          placeholder="请输入联系方式"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
       </el-form-item>
       <el-form-item label="创建时间" prop="createTime">
         <el-date-picker
@@ -56,7 +95,7 @@
           type="primary"
           plain
           @click="openForm('create')"
-          v-hasPermi="['agri:planting-scheme:create']"
+          v-hasPermi="['agri:supply-market-info:create']"
         >
           <Icon icon="ep:plus" class="mr-5px" />
           新增
@@ -66,7 +105,7 @@
           plain
           @click="handleExport"
           :loading="exportLoading"
-          v-hasPermi="['agri:planting-scheme:export']"
+          v-hasPermi="['agri:supply-market-info:export']"
         >
           <Icon icon="ep:download" class="mr-5px" />
           导出
@@ -78,36 +117,24 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <!-- <el-table-column label="主键ID" align="center" prop="id" /> -->
-      <el-table-column label="作物名称" align="center" prop="cropName" />
-      <el-table-column label="作物图片" align="center" prop="cropImage">
+      <el-table-column label="名称" align="center" prop="name" />
+      <el-table-column label="位置" align="center" prop="position" />
+      <el-table-column label="图片" align="center" prop="image">
         <template #default="{ row }">
           <el-image
             class="h-50px w-50px"
-            :src="row.cropImage"
-            :preview-src-list="[row.cropImage]"
+            :src="row.image"
+            :preview-src-list="[row.image]"
             preview-teleported
             fit="cover"
           />
         </template>
       </el-table-column>
-      <el-table-column label="详情图片" align="center" prop="detailsImage">
-        <template #default="{ row }">
-          <el-image
-            class="h-50px w-50px"
-            :src="row.detailsImage"
-            :preview-src-list="[row.detailsImage]"
-            preview-teleported
-            fit="cover"
-          />
-        </template>
-      </el-table-column>
-      <el-table-column label="类别" align="center" prop="category">
-        <template #default="scope">
-          <dict-tag :type="DICT_TYPE.AGRI_PLANTING_SCHEME_TYPE" :value="scope.row.category" />
-        </template>
-      </el-table-column>
-      <el-table-column label="内容" align="center" prop="content" />
+      <el-table-column label="介绍信息" align="center" prop="introduction" />
+      <el-table-column label="作物" align="center" prop="crop" />
+      <el-table-column label="类别" align="center" prop="category" />
+      <el-table-column label="工作单位" align="center" prop="workUnit" />
+      <el-table-column label="联系方式" align="center" prop="contactInfo" />
       <el-table-column
         label="创建时间"
         align="center"
@@ -121,7 +148,7 @@
             link
             type="primary"
             @click="openForm('update', scope.row.id)"
-            v-hasPermi="['agri:planting-scheme:update']"
+            v-hasPermi="['agri:supply-market-info:update']"
           >
             编辑
           </el-button>
@@ -129,7 +156,7 @@
             link
             type="danger"
             @click="handleDelete(scope.row.id)"
-            v-hasPermi="['agri:planting-scheme:delete']"
+            v-hasPermi="['agri:supply-market-info:delete']"
           >
             删除
           </el-button>
@@ -146,32 +173,34 @@
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
-  <PlantingSchemeForm ref="formRef" @success="getList" />
+  <SupplyMarketInfoForm ref="formRef" @success="getList" />
 </template>
 
 <script setup lang="ts">
-import { getStrDictOptions, DICT_TYPE } from '@/utils/dict';
 import { dateFormatter } from '@/utils/formatTime';
 import download from '@/utils/download';
-import { PlantingSchemeApi, PlantingSchemeVO } from '@/api/agri/plantingscheme';
-import PlantingSchemeForm from './PlantingSchemeForm.vue';
+import { SupplyMarketInfoApi, SupplyMarketInfoVO } from '@/api/agri/supplymarketinfo';
+import SupplyMarketInfoForm from './SupplyMarketInfoForm.vue';
 
-/** AI种植方案 列表 */
-defineOptions({ name: 'PlantingScheme' });
+/** 供销信息 列表 */
+defineOptions({ name: 'SupplyMarketInfo' });
 
 const message = useMessage(); // 消息弹窗
 const { t } = useI18n(); // 国际化
 
 const loading = ref(true); // 列表的加载中
-const list = ref<PlantingSchemeVO[]>([]); // 列表的数据
+const list = ref<SupplyMarketInfoVO[]>([]); // 列表的数据
 const total = ref(0); // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
-  cropName: undefined,
-  cropImage: undefined,
-  detailsImage: undefined,
+  name: undefined,
+  position: undefined,
+  introduction: undefined,
+  crop: undefined,
   category: undefined,
+  workUnit: undefined,
+  contactInfo: undefined,
   createTime: []
 });
 const queryFormRef = ref(); // 搜索的表单
@@ -181,7 +210,7 @@ const exportLoading = ref(false); // 导出的加载中
 const getList = async () => {
   loading.value = true;
   try {
-    const data = await PlantingSchemeApi.getPlantingSchemePage(queryParams);
+    const data = await SupplyMarketInfoApi.getSupplyMarketInfoPage(queryParams);
     list.value = data.list;
     total.value = data.total;
   } finally {
@@ -213,7 +242,7 @@ const handleDelete = async (id: number) => {
     // 删除的二次确认
     await message.delConfirm();
     // 发起删除
-    await PlantingSchemeApi.deletePlantingScheme(id);
+    await SupplyMarketInfoApi.deleteSupplyMarketInfo(id);
     message.success(t('common.delSuccess'));
     // 刷新列表
     await getList();
@@ -227,8 +256,8 @@ const handleExport = async () => {
     await message.exportConfirm();
     // 发起导出
     exportLoading.value = true;
-    const data = await PlantingSchemeApi.exportPlantingScheme(queryParams);
-    download.excel(data, 'AI种植方案.xls');
+    const data = await SupplyMarketInfoApi.exportSupplyMarketInfo(queryParams);
+    download.excel(data, '供销信息.xls');
   } catch {
   } finally {
     exportLoading.value = false;

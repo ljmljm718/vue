@@ -13,6 +13,9 @@
       <el-form-item label="作物图片" prop="cropImage">
         <UploadImg v-model="formData.cropImage" />
       </el-form-item>
+      <el-form-item label="详情图片" prop="detailsImage">
+        <UploadImg v-model="formData.detailsImage" />
+      </el-form-item>
       <el-form-item label="类别" prop="category">
         <el-select v-model="formData.category" placeholder="请选择类别">
           <el-option
@@ -51,6 +54,7 @@ const formData = ref({
   id: undefined,
   cropName: undefined,
   cropImage: undefined,
+  detailsImage: undefined,
   category: undefined,
   content: undefined
 });
@@ -105,6 +109,7 @@ const resetForm = () => {
     id: undefined,
     cropName: undefined,
     cropImage: undefined,
+    detailsImage: undefined,
     category: undefined,
     content: undefined
   };
