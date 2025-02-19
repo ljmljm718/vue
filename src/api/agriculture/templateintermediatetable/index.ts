@@ -52,5 +52,12 @@ export const TemplateIntermediateTableApi = {
       url: `/agriculture/template-intermediate-table/export-excel`,
       params
     });
+  },
+
+  // 根据模板id查询方案编号
+  getActionIdByTemplateId: async (templateId: number) => {
+    return await request.get({
+      url: `/agriculture/template-intermediate-table/get-action-id?templateId=` + templateId
+    });
   }
 };

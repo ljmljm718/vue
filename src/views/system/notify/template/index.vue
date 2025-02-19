@@ -96,6 +96,7 @@
           <dict-tag :type="DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE" :value="scope.row.type" />
         </template>
       </el-table-column>
+      <el-table-column label="方案动作" align="center" prop="actionId" />
       <el-table-column label="发送人名称" align="center" prop="nickname" />
       <el-table-column
         label="模板内容"

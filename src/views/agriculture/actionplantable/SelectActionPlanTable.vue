@@ -99,6 +99,7 @@
         :stripe="true"
         ref="multipleTableRef"
         @select="select"
+        :row-key="getRowKeys"
         @row-click="selectClick"
         @selection-change="handleSelectionChange"
       >
@@ -138,6 +139,7 @@ import { dateFormatter } from '@/utils/formatTime';
 import download from '@/utils/download';
 import { ActionPlanTableApi, ActionPlanTableVO } from '@/api/agriculture/actionplantable';
 import { TemplateIntermediateTableApi } from '@/api/agriculture/templateintermediatetable';
+import { ElTable } from 'element-plus';
 
 /** 方案动作 列表 */
 defineOptions({ name: 'ActionPlanTable' });
@@ -161,6 +163,12 @@ const queryParams = reactive({
 });
 const queryFormRef = ref(); // 搜索的表单
 const exportLoading = ref(false); // 导出的加载中
+
+//选中的list
+const getRowKeys = (row) => {
+  //记录每行的key值
+  return row.actionId;
+};
 
 /**
  *
@@ -229,11 +237,13 @@ const submitForm = async () => {
 };
 
 const fuId = ref();
+const actionIdList = ref([]); //绑定的动作id
 /** 打开弹窗 */
 const open = async (id: string) => {
   fuId.value = id;
   idArray.value = [];
 
+  actionIdList.value = await TemplateIntermediateTableApi.getActionIdByTemplateId(fuId.value);
   dialogVisible.value = true;
   await nextTick(); // 等待，避免 queryFormRef 为空
   // 加载下属地块列表
@@ -252,6 +262,7 @@ const getList = async () => {
     const data = await ActionPlanTableApi.getActionPlanTablePage(queryParams);
     list.value = data.list;
     total.value = data.total;
+    await initializeSelection();
   } finally {
     loading.value = false;
   }
@@ -286,6 +297,17 @@ const handleDelete = async (id: number) => {
     // 刷新列表
     await getList();
   } catch {}
+};
+
+const initializeSelection = async () => {
+  await nextTick(() => {
+    actionIdList.value.forEach((id) => {
+      const row = list.value.find((item) => item.actionId === id);
+      if (row && multipleTableRef.value) {
+        multipleTableRef.value.toggleRowSelection(row, true);
+      }
+    });
+  });
 };
 
 /** 初始化 **/

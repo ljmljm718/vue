@@ -14,6 +14,7 @@ export interface NotifyTemplateVO {
   noticeTiming: string;
   noticeTime: Date;
   repeatType: string;
+  actionId: string;
 }
 
 export interface NotifySendReqVO {

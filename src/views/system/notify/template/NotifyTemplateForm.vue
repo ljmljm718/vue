@@ -29,6 +29,15 @@
           />
         </el-select>
       </el-form-item>
+      <el-form-item label="方案动作" prop="actionId">
+        <el-input v-model="formData.actionId" placeholder="请点击右侧选择对应方案动作" disabled>
+          <template #append>
+            <el-button @click="openActionPopup('0')">
+              <Icon icon="ep:search" />
+            </el-button>
+          </template>
+        </el-input>
+      </el-form-item>
       <el-form-item label="允许通知" prop="status">
         <el-radio-group v-model="formData.status">
           <el-radio
@@ -60,11 +69,16 @@
       <el-button @click="dialogVisible = false">取 消</el-button>
     </template>
   </Dialog>
+
+  <!--  选择方案动作-->
+  <SelectActionPlanTable ref="actionPopupRef" @success="handleActionPopupChange" />
 </template>
 <script lang="ts" setup>
 import { DICT_TYPE, getIntDictOptions } from '@/utils/dict';
 import * as NotifyTemplateApi from '@/api/system/notify/template';
 import { CommonStatusEnum } from '@/utils/constants';
+import { ActionPlanTableVO } from '@/api/agriculture/actionplantable';
+import SelectActionPlanTable from '@/views/agriculture/actionplantable/SelectActionPlanTable.vue';
 const message = useMessage(); // 消息弹窗
 
 const dialogVisible = ref(false); // 弹窗的是否展示
@@ -84,7 +98,8 @@ const formData = ref<NotifyTemplateApi.NotifyTemplateVO>({
   broadcastStatus: CommonStatusEnum.DISABLE,
   noticeTiming: '',
   noticeTime: '',
-  repeatType: ''
+  repeatType: '',
+  actionId: ''
 });
 const formRules = reactive({
   type: [{ required: true, message: '消息类型不能为空', trigger: 'change' }],
@@ -154,8 +169,19 @@ const resetForm = () => {
     broadcastStatus: CommonStatusEnum.DISABLE,
     noticeTiming: '',
     noticeTime: '',
-    repeatType: ''
+    repeatType: '',
+    actionId: ''
   };
   formRef.value?.resetFields();
+};
+
+//选择方案动作
+const actionPopupRef = ref();
+const openActionPopup = (id: string) => {
+  actionPopupRef.value.open(id);
+};
+const handleActionPopupChange = (order: ActionPlanTableVO) => {
+  const actionIds = order.map((item) => String(item.actionId)).join(',');
+  formData.value.actionId = actionIds;
 };
 </script>
