@@ -352,5 +352,8 @@ export enum DICT_TYPE {
   AGRI_SUITABILITY_ACTIVITY = 'agri_suitability_activity',
   AGRI_MENBER = 'agri_member',
   // ========== agri -  种植方案 ==========
-  AGRI_PLANTING_SCHEME_TYPE = 'agri_planting_scheme_type'
+  AGRI_PLANTING_SCHEME_TYPE = 'agri_planting_scheme_type',
+
+  // ========== agri -  大模型 ==========
+  BIGMODEL_CONFIG_BELONG = 'bigmodel_config_belong'
 }
