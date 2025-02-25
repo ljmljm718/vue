@@ -1,30 +1,42 @@
 <template>
-  <div
+  <!-- <div
     ref="button"
     class="draggable-button"
-    @mousedown="startDrag"
-    @touchstart="startDrag"
     :style="{
       top: `${position.y}px`,
       left: `${position.x}px`,
       transition: isSnapping ? 'left 0.3s, top 0.3s' : 'none'
     }"
+  > -->
+  <div
+    ref="button"
+    class="draggable-button"
+    :style="{
+      right: 0,
+      bottom: '60px',
+      transition: isSnapping ? 'left 0.3s, top 0.3s' : 'none'
+    }"
   >
-    <el-popconfirm
-      title="Hi,我是智慧农业AI助手"
-      icon=""
-      confirm-button-text="打开"
-      @confirm="handleConfirm()"
+    <el-popover
+      trigger="click"
+      placement="left"
+      popper-style="padding: 0"
+      :offset="-20"
+      :width="400"
     >
       <template #reference>
         <img src="/robot.png" class="relative right-[20px]" />
       </template>
-    </el-popconfirm>
+      <template #default>
+        <chat-view />
+      </template>
+    </el-popover>
   </div>
 </template>
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue';
-
+// @ts-ignore
+import chatView from './chatView.vue';
 const handleConfirm = () => {
   window.open('/ai');
 };

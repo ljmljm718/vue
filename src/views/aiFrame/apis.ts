@@ -146,3 +146,18 @@ export const getauth = async (params: any) => {
 export const getLibDetailById = async (params: any) => {
   return await request.get({ url: `/agriculture/collection/get-collection`, params });
 };
+
+// deepseek对话
+export const postDeepSeekChat = async (data: any) => {
+  const url = '/api/chat';
+  const service = axios.create({
+    baseURL: '/deepseek',
+    timeout: 100000
+  });
+  const res = await service({
+    url: url,
+    method: 'POST',
+    data
+  });
+  return res;
+};

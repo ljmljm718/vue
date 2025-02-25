@@ -53,7 +53,13 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
           ws: false,
           changeOrigin: true,
           rewrite: (path) => path.replace(new RegExp(`^/visual`), '/'),
-        }
+        },
+        ['/deepseek']: {
+          target: "http://117.73.9.21:11434/",
+          ws: false,
+          changeOrigin: true,
+          rewrite: (path) => path.replace(new RegExp(`^/deepseek`), '/'),
+        },
       },
     },
     // 项目使用的vite插件。 单独提取到build/vite/plugin中管理
