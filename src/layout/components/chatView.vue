@@ -1,111 +1,146 @@
 <template>
   <div class="w-full h-[500px] box-border">
-    <div class="h-[40px] text-[16px] flex justify-center items-center">
-      <div class="font-bold">AI智能对话</div>
+    <div class="h-[40px] text-[16px] flex justify-between items-center px-[10px]">
+      <template v-if="'chat' !== showContent">
+        <div class="w-[20px] h-[12px] goBack cursor-pointer" @click="goBack"></div>
+      </template>
+      <template v-else>
+        <div class="w-[20px] h-[12px]"></div>
+      </template>
+      <div class="font-bold cursor-default">
+        {{ 'chat' === showContent ? 'AI智能对话' : '历史' }}
+      </div>
+      <div
+        class="w-[20px] h-[20px]"
+        :class="['chat' === showContent && 'history cursor-pointer']"
+        @click="handleClickHistory"
+      ></div>
     </div>
-    <el-scrollbar
-      :height="374"
-      style="height: 374px"
-      ref="chatScrollIns"
-      class="px-[12px] py-[10px] box-border scroll-view bg-[#f5f6fa] dark:bg-[#141414]"
-    >
-      <div v-if="infoList.length > 0" class="official-content pb-[20px]">
-        <div v-for="item in infoList" :key="item.key">
-          <template v-if="item.type === 'user'">
-            <div class="flex" style="flex-direction: row-reverse">
-              <div
-                style="
-                  background-color: #356bfb;
-                  color: white;
-                  border-radius: 8px 8px 6px 8px;
-                  padding: 6px 8px;
-                  margin: 10px 0;
-                "
-              >
-                {{ item.text }}
-              </div>
-            </div>
-          </template>
-          <template v-if="item.type === 'assistant'">
-            <div class="avatar">
-              <div class="avatar-icon"></div>
-              <div class="avatar-name">AI小农人</div>
-            </div>
-            <div
-              class="bg-white dark:bg-[#1d1e1f] rounded-md"
-              style="padding: 6px 8px; margin-top: 10px"
-            >
-              <div v-if="item.thinkContent" class="flex flex-col" style="align-items: flex-start">
+    <template v-if="'chat' === showContent">
+      <el-scrollbar
+        :height="374"
+        style="height: 374px"
+        ref="chatScrollIns"
+        class="px-[12px] py-[10px] box-border scroll-view bg-[#f5f6fa] dark:bg-[#141414]"
+      >
+        <div v-if="infoList.length > 0" class="official-content pb-[20px]">
+          <div v-for="item in infoList" :key="item.key">
+            <template v-if="item.type === 'user'">
+              <div class="flex" style="flex-direction: row-reverse">
                 <div
-                  class="rounded-md flex items-center bg-[#f6f6f6] dark:text-[#333] cursor-default"
-                  style="padding: 6px 8px"
-                  @click="item.showThink = !item.showThink"
-                >
-                  <img :src="imgDeepSeek" style="width: 16px; height: 16px" />
-                  <div style="padding: 0 8px">{{ item.text ? '已经深度思考' : '思考中...' }}</div>
-                  <img :src="imgUp" style="width: 16px; height: 16px" />
-                </div>
-                <div
-                  v-if="item.showThink"
                   style="
-                    border-left: 2px solid #b0b0b0;
-                    color: #b0b0b0;
+                    background-color: #356bfb;
+                    color: white;
+                    border-radius: 8px 8px 6px 8px;
                     padding: 6px 8px;
-                    margin: 8px 0;
+                    margin: 10px 0;
                   "
                 >
-                  {{ item.thinkContent }}
+                  {{ item.text }}
                 </div>
               </div>
-              <div v-if="item.text">
-                <div
-                  class="text-wrap box-border w-full"
-                  :innerHTML="marked.parse(item.text)"
-                  v-highlight
-                ></div>
+            </template>
+            <template v-if="item.type === 'assistant'">
+              <div class="avatar">
+                <div class="avatar-icon"></div>
+                <div class="avatar-name">AI小农人</div>
               </div>
-              <div v-if="!item.text && !item.thinkContent">思考中...</div>
+              <div
+                class="bg-white dark:bg-[#1d1e1f] rounded-md"
+                style="padding: 6px 8px; margin-top: 10px"
+              >
+                <div v-if="item.thinkContent" class="flex flex-col" style="align-items: flex-start">
+                  <div
+                    class="rounded-md flex items-center bg-[#f6f6f6] dark:text-[#333] cursor-default"
+                    style="padding: 6px 8px"
+                    @click="item.showThink = !item.showThink"
+                  >
+                    <img :src="imgDeepSeek" style="width: 16px; height: 16px" />
+                    <div style="padding: 0 8px">{{ item.text ? '已经深度思考' : '思考中...' }}</div>
+                    <img :src="imgUp" style="width: 16px; height: 16px" />
+                  </div>
+                  <div
+                    v-if="item.showThink"
+                    style="
+                      border-left: 2px solid #b0b0b0;
+                      color: #b0b0b0;
+                      padding: 6px 8px;
+                      margin: 8px 0;
+                    "
+                  >
+                    {{ item.thinkContent }}
+                  </div>
+                </div>
+                <div v-if="item.text">
+                  <div
+                    class="text-wrap box-border w-full"
+                    :innerHTML="marked.parse(item.text)"
+                    v-highlight
+                  ></div>
+                </div>
+                <div v-if="!item.text && !item.thinkContent">思考中...</div>
+              </div>
+            </template>
+          </div>
+        </div>
+        <div v-else class="w-full h-[300px] flex flex-col justify-center items-center">
+          <div class="big-logo"></div>
+          <div style="font-size: 18px">Hi，我是AI小农人</div>
+          <div style="font-size: 18px">你的智能农业助手</div>
+        </div>
+      </el-scrollbar>
+      <div class="h-[86px] box-border">
+        <div
+          class="input-outer-container p-[2px] rounded-[8px] shadow-md relative"
+          style="flex: 0 0 auto"
+        >
+          <div class="p-8px rounded-8px bg-white dark:bg-#121212 flex items-end overflow-hidden">
+            <textarea
+              class="ai-show-textarea grow"
+              style="font-size: inherit"
+              id="textarea"
+              rows="2"
+              wrap="soft"
+              placeholder="请输入问题，我可以完成智能问答、文档编写、代码生成等多种任务…"
+            ></textarea>
+            <div class="mx-8px mb-4px">
+              <RadioButton
+                v-model:disableSend="radioRecording"
+                :generateTexting="disabledSendBtn"
+                @output="handleRadioRecoOutput"
+              />
             </div>
-          </template>
+            <div>
+              <div
+                v-loading="disabledSendBtn"
+                :class="`w-48px h-32px ${disabledSendBtn || radioRecording ? 'disabled-send' : 'send-btn'} cursor-pointer`"
+                @click="handleSendMsg(null)"
+              ></div>
+            </div>
+          </div>
         </div>
       </div>
-      <div v-else class="w-full h-[300px] flex flex-col justify-center items-center">
-        <div class="big-logo"></div>
-        <div style="font-size: 18px">Hi，我是AI小农人</div>
-        <div style="font-size: 18px">你的智能农业助手</div>
-      </div>
-    </el-scrollbar>
-    <div class="h-[86px] box-border">
-      <div
-        class="input-outer-container p-[2px] rounded-[8px] shadow-md relative"
-        style="flex: 0 0 auto"
+    </template>
+    <template v-if="'history' === showContent">
+      <el-scrollbar
+        :height="460"
+        style="height: 460px"
+        ref="chatScrollIns"
+        class="px-[12px] py-[10px] box-border scroll-view bg-[#f5f6fa] dark:bg-[#141414]"
       >
-        <div class="p-8px rounded-8px bg-white dark:bg-#121212 flex items-end overflow-hidden">
-          <textarea
-            class="ai-show-textarea grow"
-            style="font-size: inherit"
-            id="textarea"
-            rows="2"
-            wrap="soft"
-            placeholder="请输入问题，我可以完成智能问答、文档编写、代码生成等多种任务…"
-          ></textarea>
-          <div class="mx-8px mb-4px">
-            <RadioButton
-              v-model:disableSend="radioRecording"
-              :generateTexting="disabledSendBtn"
-              @output="handleRadioRecoOutput"
-            />
-          </div>
-          <div>
-            <div
-              v-loading="disabledSendBtn"
-              :class="`w-48px h-32px ${disabledSendBtn || radioRecording ? 'disabled-send' : 'send-btn'} cursor-pointer`"
-              @click="handleSendMsg(null)"
-            ></div>
-          </div>
-        </div>
-      </div>
-    </div>
+        <chat-history @go-to-detail="handleGoToDetail" />
+      </el-scrollbar>
+    </template>
+    <template v-if="'detail' === showContent">
+      <el-scrollbar
+        :height="460"
+        style="height: 460px"
+        ref="chatScrollIns"
+        class="px-[12px] py-[10px] box-border scroll-view bg-[#f5f6fa] dark:bg-[#141414]"
+      >
+        <chat-detail :id="historyId" />
+      </el-scrollbar>
+    </template>
   </div>
 </template>
 <script setup lang="ts">
@@ -116,17 +151,11 @@ import hljs from 'highlight.js';
 import 'highlight.js/styles/felipec.css';
 // @ts-ignore
 import RadioButton from '@/views/aiFrame/pages/textChat/radioButton.vue';
-import {
-  getCollectionList,
-  chatThemeCreate,
-  chatThemePage,
-  chatHistoryPage,
-  chatThemeDelete,
-  putUpdateChatTheme,
-  getContextSearch,
-  getBotChat,
-  postDeepSeekChat
-} from '@/views/aiFrame/apis';
+import { chatThemeCreate, postDeepSeekChat, postCreateChatHistory } from '@/views/aiFrame/apis';
+// @ts-ignore
+import chatHistory from './chatHistory.vue';
+// @ts-ignore
+import chatDetail from './chatDetail.vue';
 const infoList = ref<any[]>([]);
 const questionText = ref('');
 const messageLoading = ref(false);
@@ -223,6 +252,17 @@ const handleSendMsg = async (text) => {
     console.log('请求得到的主题ID', data);
     if (data) themeId.value = data;
   }
+  // 保存聊天记录
+  await postCreateChatHistory({
+    themeId: themeId.value,
+    role: 'user',
+    message: {
+      text: text,
+      image: ''
+    }
+  }).catch((err) => {
+    console.log('保存user消息报错', err);
+  });
   // 页面上显示用户消息
   radioRecording.value = true;
   if (disabledSendBtn.value) return;
@@ -258,6 +298,16 @@ const handleSendMsg = async (text) => {
     message = '请求错误，请稍后重试';
   } else {
     message = data.message.content;
+    await postCreateChatHistory({
+      themeId: themeId.value,
+      role: 'assistant',
+      message: {
+        text: message,
+        image: ''
+      }
+    }).catch((err) => {
+      console.log('保存assistant消息报错', err);
+    });
   }
   const { main, think } = splitThinkAndContent(message);
   // 模拟流式输出
@@ -290,6 +340,27 @@ const handleSendMsg = async (text) => {
   textarea.value = '';
   radioRecording.value = false;
 };
+/* 进入历史列表 */
+const handleClickHistory = () => {
+  showContent.value = 'history';
+};
+// chat 对话 history 历史 detail 历史详情
+const showContent = ref('chat');
+/* 返回 */
+const goBack = () => {
+  if ('history' === showContent.value) {
+    showContent.value = 'chat';
+  }
+  if ('detail' === showContent.value) {
+    showContent.value = 'history';
+  }
+};
+/* 跳转到历史详情 */
+const historyId = ref('');
+const handleGoToDetail = (id) => {
+  historyId.value = id;
+  showContent.value = 'detail';
+};
 </script>
 <style scoped lang="scss">
 .avatar {
@@ -319,9 +390,29 @@ const handleSendMsg = async (text) => {
 .big-logo {
   width: 160px;
   height: 160px;
-  background-image: url(@/views/aiFrame/assets/bigLogo.png);
+  background-image: url(/robot.png);
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
+}
+.history {
+  background-image: url(@/views/aiFrame/assets/history.svg);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.goBack {
+  background-image: url(@/views/aiFrame/assets/rightTri.svg);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  transform: rotate(180deg);
+}
+.goBack-light {
+  background-image: url(@/views/aiFrame/assets/rightTriLight.svg);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  transform: rotate(180deg);
 }
 </style>
