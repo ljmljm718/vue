@@ -114,7 +114,7 @@
               <div
                 v-loading="disabledSendBtn"
                 :class="`w-48px h-32px ${disabledSendBtn || radioRecording ? 'disabled-send' : 'send-btn'} cursor-pointer`"
-                @click="handleSendMsg(null)"
+                @click="handleSendMsgStream(null)"
               ></div>
             </div>
           </div>
@@ -144,6 +144,7 @@
   </div>
 </template>
 <script setup lang="ts">
+import { Ollama } from 'ollama/browser';
 import imgDeepSeek from '@/views/aiFrame/assets/deepseek.svg';
 import imgUp from '@/views/aiFrame/assets/up.svg';
 import { marked } from 'marked';
@@ -160,6 +161,8 @@ const infoList = ref<any[]>([]);
 const questionText = ref('');
 const messageLoading = ref(false);
 const themeId = ref('');
+// 想要开发用流式返回用这行代码 const ollama = new Ollama({ host: 'http://117.73.9.21:11434' });
+const ollama = new Ollama({ host: 'http://127.0.0.1:11434' });
 // 实现自定义指令 高亮代码块
 const highlightForce = (el) => {
   if (!el) el = document;
@@ -203,7 +206,7 @@ const handleTextChange = () => {
     const keyCode = event.keyCode;
     const shiftKey = event.shiftKey;
     if (!shiftKey && keyCode === 13) {
-      handleSendMsg(null);
+      handleSendMsgStream(null);
     }
   });
 };
@@ -233,6 +236,126 @@ const splitThinkAndContent = (fullText) => {
     mainRes = fullText;
   }
   return { main: mainRes, think: thinkRes };
+};
+// 发送消息
+const handleSendMsgStream = async (text) => {
+  // 获取要发送的文本
+  const textarea = document.querySelector('textarea');
+  if (!textarea) return;
+  if (!text) text = textarea.value;
+  if (!text) return;
+  // 没有则获取主题ID
+  if (!themeId.value) {
+    const data = await chatThemeCreate({
+      collectionId: '',
+      model: 'deepseek-r1:7b',
+      theme: text,
+      type: 'text'
+    });
+    console.log('请求得到的主题ID', data);
+    if (data) themeId.value = data;
+  }
+  // 页面上显示用户消息
+  radioRecording.value = true;
+  if (disabledSendBtn.value) return;
+  disabledSendBtn.value = true;
+  infoList.value.push({
+    type: 'user',
+    text
+  });
+  textarea.value = '';
+  scollToBottom();
+  // 获取返回结果
+  const assistantItem = {
+    type: 'assistant',
+    text: '',
+    thinkContent: '',
+    showThink: true
+  };
+  infoList.value.push(assistantItem);
+  // 流式请求
+  let flag = false;
+  const response = await ollama
+    .chat({
+      model: 'deepseek-r1:7b',
+      messages: [
+        {
+          role: 'user',
+          content: text
+        }
+      ],
+      stream: true
+    })
+    .catch((err) => {
+      console.log('服务器错误:' + err.toString());
+      flag = true;
+    });
+  if (flag) {
+    // 如果本地流式不行 走线上非流式
+    infoList.value.splice(infoList.value.length - 2, 2);
+    disabledSendBtn.value = false;
+    questionText.value = '';
+    textarea.value = '';
+    radioRecording.value = false;
+    await handleSendMsg(text);
+    return;
+  }
+  // 处理流式返回
+  let fullText = '';
+  for await (const part of response) {
+    fullText += part.message.content;
+    if (fullText.startsWith('<think>')) {
+      // 如果开头出现<think>，说明有思考过程，需要进行分离
+      if (fullText.indexOf('</think>') === -1) {
+        // 没有</think>说明全是思考
+        infoList.value[infoList.value.length - 1].thinkContent = fullText.replace('<think>', '');
+        scollToBottom();
+      } else {
+        // 既有思考，也有主要内容
+        const scriptRegex = /<think>([\s\S]*?)<\/think>/gi;
+        const parts = fullText.split(scriptRegex);
+        const [_, thinkContent, mainMessage] = parts;
+        if (thinkContent.replace(/\n/g, ''))
+          infoList.value[infoList.value.length - 1].thinkContent = thinkContent;
+        else infoList.value[infoList.value.length - 1].thinkContent = '';
+        infoList.value[infoList.value.length - 1].text = mainMessage;
+        scollToBottom();
+      }
+    } else {
+      // 没有思考过程，直接全部返回
+      infoList.value[infoList.value.length - 1].text = fullText;
+      scollToBottom();
+    }
+  }
+  // 保存聊天记录
+  await postCreateChatHistory({
+    themeId: themeId.value,
+    role: 'user',
+    message: {
+      text: text,
+      image: ''
+    }
+  }).catch((err) => {
+    console.log('保存user消息报错', err);
+  });
+  setTimeout(() => {
+    postCreateChatHistory({
+      themeId: themeId.value,
+      role: 'assistant',
+      message: {
+        text: fullText,
+        image: ''
+      }
+    }).catch((err) => {
+      console.log('保存assistant消息报错', err);
+    });
+  }, 1000);
+  // 设置状态
+  scollToBottom();
+  disabledSendBtn.value = false;
+  questionText.value = '';
+  textarea.value = '';
+  radioRecording.value = false;
 };
 // 发送消息
 const handleSendMsg = async (text) => {

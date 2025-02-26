@@ -73,6 +73,7 @@
     "min-dash": "^4.1.1",
     "mitt": "^3.0.1",
     "nprogress": "^0.2.0",
+    "ollama": "^0.5.14",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.0",
     "pinyin-pro": "^3.23.0",
